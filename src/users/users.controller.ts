@@ -1,34 +1,82 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Res,
+  HttpStatus,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Response } from 'express';
 
 @Controller('api/v1/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
+    try {
+      const result = await this.usersService.create(createUserDto);
+      return res
+        .status(HttpStatus.OK)
+        .json({ message: 'success', data: result });
+    } catch (error) {
+      return res.json({ message: 'error', data: error.response });
+    }
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  async findAll(@Res() res: Response) {
+    try {
+      const users = await this.usersService.findAll();
+      return res
+        .status(HttpStatus.OK)
+        .json({ message: 'success', data: users });
+    } catch (error) {
+      return res.json({ message: 'error', data: error.response });
+    }
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.find(+id);
+  async findOne(@Param('id') id: string, @Res() res: Response) {
+    try {
+      const user = await this.usersService.find(+id);
+      return res.status(HttpStatus.OK).json({ message: 'success', data: user });
+    } catch (error) {
+      return res.json({ message: 'error', data: error.response });
+    }
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+    @Res() res: Response,
+  ) {
+    try {
+      const result = await this.usersService.update(+id, updateUserDto);
+      return res
+        .status(HttpStatus.OK)
+        .json({ message: 'success', data: result });
+    } catch (error) {
+      return res.json({ message: 'error', data: error.response });
+    }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  async remove(@Param('id') id: string, @Res() res: Response) {
+    try {
+      const result = await this.usersService.remove(+id);
+      return res
+        .status(HttpStatus.OK)
+        .json({ message: 'success', data: result });
+    } catch (error) {
+      return res.json({ message: 'error', data: error.response });
+    }
   }
 }
