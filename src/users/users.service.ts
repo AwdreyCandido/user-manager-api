@@ -1,15 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { DatabaseService } from 'src/database/database.service';
+import { Connection } from 'mysql2/promise';
 
 @Injectable()
 export class UsersService {
+  constructor(private readonly dbService: DatabaseService) {
+  }
+
   create(createUserDto: CreateUserDto) {
     return createUserDto;
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll() {
+    const connection = this.dbService.getConnection();
+    const [rows] = await connection.execute('SELECT * FROM users');
+    return rows;
   }
 
   findOne(id: number) {
@@ -17,7 +24,7 @@ export class UsersService {
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    return updateUserDto
+    return updateUserDto;
   }
 
   remove(id: number) {
