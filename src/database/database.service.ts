@@ -12,7 +12,7 @@ export class DatabaseService {
 
   private async connect() {
     try {
-      this.connection = await createConnection(MYSQL_LOCAL_CONFIG);
+      this.connection = await createConnection(MYSQL_WEB_HOST_CONFIG);
       console.log('Connected to MySQL database');
     } catch (error) {
       console.error('Error connecting to MySQL database', error.stack);
