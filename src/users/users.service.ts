@@ -21,7 +21,7 @@ export class UsersService {
 
   // FIND USER BY ID
   async find(id: number) {
-    const connection = this.dbService.getConnection();
+    const connection = await this.dbService.getConnection();
     try {
       const [result]: [RowDataPacket[], any] = await connection.execute(
         `SELECT * FROM users WHERE users.id = ${id}`,
@@ -35,25 +35,27 @@ export class UsersService {
     } catch (error) {
       throw new InternalServerErrorException(
         'Ocorreu um erro ao buscar o usuário',
+        error,
       );
     }
   }
 
   // GET ALL USERS
   async findAll() {
-    const connection = this.dbService.getConnection();
+    const connection = await this.dbService.getConnection();
     try {
       const [rows] = await connection.execute('SELECT * FROM users');
       return rows;
     } catch (error) {
       throw new InternalServerErrorException(
         'Ocorreu um erro ao buscar os usuários',
+        error,
       );
     }
   }
 
   async findPerMonth(month: number) {
-    const connection = this.dbService.getConnection();
+    const connection = await this.dbService.getConnection();
 
     if (!month || month < 0 || month > 12) {
       throw new BadRequestException('O mês deve estar entre 1 e 12');
@@ -70,12 +72,13 @@ export class UsersService {
     } catch (error) {
       throw new InternalServerErrorException(
         'Ocorreu um erro ao buscar os dados',
+        error,
       );
     }
   }
 
   async findQuantity() {
-    const connection = this.dbService.getConnection();
+    const connection = await this.dbService.getConnection();
 
     try {
       const [rows] = await connection.execute(`
@@ -87,16 +90,17 @@ export class UsersService {
     } catch (error) {
       throw new InternalServerErrorException(
         'Ocorreu um erro ao buscar os dados',
+        error,
       );
     }
   }
 
   async create(createUserDto: CreateUserDto) {
-    const connection = this.dbService.getConnection();
+    const connection = await this.dbService.getConnection();
 
     try {
       const [result] = await connection.execute<ResultSetHeader>(
-        `INSERT INTO Users (
+        `INSERT INTO users (
             name, 
             email, 
             phone,
@@ -119,12 +123,13 @@ export class UsersService {
     } catch (error) {
       throw new InternalServerErrorException(
         'Ocorreu um erro ao criar novo usuário',
+        error,
       );
     }
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    const connection = this.dbService.getConnection();
+    const connection = await this.dbService.getConnection();
     try {
       const [result] = await connection.execute<ResultSetHeader>(`
         UPDATE users SET 
@@ -145,12 +150,13 @@ export class UsersService {
     } catch (error) {
       throw new InternalServerErrorException(
         'Ocorreu um erro ao atualizar usuário',
+        error,
       );
     }
   }
 
   async remove(id: number) {
-    const connection = this.dbService.getConnection();
+    const connection = await this.dbService.getConnection();
     try {
       const [result]: [QueryResult, any] =
         await connection.execute<ResultSetHeader>(`
@@ -165,6 +171,7 @@ export class UsersService {
     } catch (error) {
       throw new InternalServerErrorException(
         'Ocorreu um erro ao deletar usuário',
+        error,
       );
     }
   }

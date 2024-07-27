@@ -26,7 +26,7 @@ export class UsersController {
         .status(HttpStatus.CREATED)
         .json({ message: 'success', data: result });
     } catch (error) {
-      return res.json({ message: 'error', data: error.response });
+      return res.json({ message: 'error', data: error });
     }
   }
 
@@ -38,7 +38,7 @@ export class UsersController {
         .status(HttpStatus.OK)
         .json({ message: 'success', data: users });
     } catch (error) {
-      return res.json({ message: 'error', data: error.response });
+      return res.json({ message: 'error', data: error });
     }
   }
 
@@ -48,7 +48,7 @@ export class UsersController {
       const user = await this.usersService.find(+id);
       return res.status(HttpStatus.OK).json({ message: 'success', data: user });
     } catch (error) {
-      return res.json({ message: 'error', data: error.response });
+      return res.json({ message: 'error', data: error });
     }
   }
 
@@ -64,7 +64,7 @@ export class UsersController {
         .status(HttpStatus.OK)
         .json({ message: 'success', data: result });
     } catch (error) {
-      return res.json({ message: 'error', data: error.response });
+      return res.json({ message: 'error', data: error });
     }
   }
 
@@ -76,7 +76,7 @@ export class UsersController {
         .status(HttpStatus.OK)
         .json({ message: 'success', data: result });
     } catch (error) {
-      return res.json({ message: 'error', data: error.response });
+      return res.json({ message: 'error', data: error });
     }
   }
 
@@ -88,7 +88,7 @@ export class UsersController {
         .status(HttpStatus.OK)
         .json({ message: 'success', data: result });
     } catch (error) {
-      return res.json({ message: 'error', data: error.response });
+      return res.json({ message: 'error', data: error });
     }
   }
 
@@ -100,7 +100,7 @@ export class UsersController {
         .status(HttpStatus.OK)
         .json({ message: 'success', data: result });
     } catch (error) {
-      return res.json({ message: 'error', data: error.response });
+      return res.json({ message: 'error', data: error });
     }
   }
 }

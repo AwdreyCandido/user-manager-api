@@ -1,26 +1,31 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { createPool, Pool } from 'mysql2';
 import mysql, { createConnection, Connection } from 'mysql2/promise';
+import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { createPool, Pool, PoolConnection } from 'mysql2/promise';
 
 @Injectable()
-export class DatabaseService {
-  private connection: Connection;
+export class DatabaseService implements OnModuleInit, OnModuleDestroy {
+  private pool: Pool;
 
   constructor() {
-    this.connect();
+    this.pool = createPool(MYSQL_WEB_HOST_CONFIG);
   }
 
-  private async connect() {
+  async onModuleInit() {
     try {
-      this.connection = await createConnection(MYSQL_WEB_HOST_CONFIG);
+      const connection = await this.pool.getConnection();
+      connection.release();
       console.log('Connected to MySQL database');
     } catch (error) {
       console.error('Error connecting to MySQL database', error.stack);
     }
   }
 
-  getConnection(): Connection {
-    return this.connection;
+  async onModuleDestroy() {
+    await this.pool.end();
+  }
+
+  async getConnection(): Promise<PoolConnection> {
+    return this.pool.getConnection();
   }
 }
 
@@ -31,7 +36,6 @@ const MYSQL_WEB_HOST_CONFIG = {
   database: 'sql5721754',
   port: 3306,
   charset: 'utf8',
-  connectionLimit: 10,
 };
 
 const MYSQL_LOCAL_CONFIG = {
@@ -41,5 +45,4 @@ const MYSQL_LOCAL_CONFIG = {
   database: 'users',
   port: 3306,
   charset: 'utf8',
-  connectionLimit: 10,
 };
