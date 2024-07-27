@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -51,6 +52,45 @@ export class UsersService {
     }
   }
 
+  async findPerMonth(month: number) {
+    const connection = this.dbService.getConnection();
+
+    if (!month || month < 0 || month > 12) {
+      throw new BadRequestException('O mês deve estar entre 1 e 12');
+    }
+
+    try {
+      const [rows] = await connection.execute(`
+        SELECT gender, COUNT(*) as quantity
+        FROM users
+        WHERE MONTH(createdAt) = ${month}
+        GROUP BY gender;
+      `);
+      return rows;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Ocorreu um erro ao buscar os dados',
+      );
+    }
+  }
+
+  async findQuantity() {
+    const connection = this.dbService.getConnection();
+
+    try {
+      const [rows] = await connection.execute(`
+        SELECT gender, COUNT(*) as quantity 
+        FROM users 
+        GROUP BY gender;
+      `);
+      return rows;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Ocorreu um erro ao buscar os dados',
+      );
+    }
+  }
+
   async create(createUserDto: CreateUserDto) {
     const connection = this.dbService.getConnection();
 
@@ -59,6 +99,7 @@ export class UsersService {
         `INSERT INTO Users (
             name, 
             email, 
+            phone,
             gender, 
             birthDate, 
             createdAt, 
@@ -66,6 +107,7 @@ export class UsersService {
           ) VALUES (
             "${createUserDto.name}", 
             "${createUserDto.email}", 
+            "${createUserDto.phone}", 
             "${createUserDto.gender}", 
             "${createUserDto.birthDate}", 
             NOW(), 
@@ -88,6 +130,7 @@ export class UsersService {
         UPDATE users SET 
           name="${updateUserDto.name}", 
           email="${updateUserDto.email}", 
+          phone="${updateUserDto.phone}", 
           gender="${updateUserDto.gender}", 
           birthDate="${updateUserDto.birthDate}", 
           updatedAt=NOW()

@@ -23,7 +23,7 @@ export class UsersController {
     try {
       const result = await this.usersService.create(createUserDto);
       return res
-        .status(HttpStatus.OK)
+        .status(HttpStatus.CREATED)
         .json({ message: 'success', data: result });
     } catch (error) {
       return res.json({ message: 'error', data: error.response });
@@ -72,6 +72,30 @@ export class UsersController {
   async remove(@Param('id') id: string, @Res() res: Response) {
     try {
       const result = await this.usersService.remove(+id);
+      return res
+        .status(HttpStatus.OK)
+        .json({ message: 'success', data: result });
+    } catch (error) {
+      return res.json({ message: 'error', data: error.response });
+    }
+  }
+
+  @Get('insights/all')
+  async findUsersQuantity(@Res() res: Response) {
+    try {
+      const result = await this.usersService.findQuantity();
+      return res
+        .status(HttpStatus.OK)
+        .json({ message: 'success', data: result });
+    } catch (error) {
+      return res.json({ message: 'error', data: error.response });
+    }
+  }
+
+  @Get('insights/:month')
+  async findUsersPerMonth(@Param('month') month: string, @Res() res: Response) {
+    try {
+      const result = await this.usersService.findPerMonth(+month);
       return res
         .status(HttpStatus.OK)
         .json({ message: 'success', data: result });

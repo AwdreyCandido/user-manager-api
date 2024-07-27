@@ -8,6 +8,9 @@ export class CreateUserDto {
   email: string;
 
   @IsString()
+  phone: string;
+
+  @IsString()
   gender: string;
 
   @IsString()
